@@ -1,0 +1,238 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DECOOPX</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Morphing background shapes -->
+    <div class="morphing-bg"></div>
+    
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">DECOOPX</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="cart-icon" onclick="toggleCart()">
+                🛒 Cart
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Home Section -->
+        <section id="home" class="home-section">
+            <div class="hero">
+                <h1>Welcome to DECOOPX</h1>
+                <p>Discover amazing products across multiple categories to get a more homely feeling on DECOOPX</p>
+            </div>
+
+            <div class="categories">
+                <div class="category-card" onclick="showCategory('electronics')">
+                    <div class="category-icon"> <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?cs=srgb&dl=pexels-pixabay-356056.jpg&fm=jpg" alt="Electronics" width="200" height="200"></div>
+                    <h3>Electronics</h3>
+                    <p>Latest gadgets and tech accessories</p>
+                </div>
+                <div class="category-card" onclick="showCategory('clothing')">
+                    <div class="category-icon"><img src="https://images.pexels.com/photos/29906028/pexels-photo-29906028.jpeg?cs=srgb&dl=pexels-star-zhang-3254790-29906028.jpg&fm=jpg" alt="Clothing" width="200" height="200"></div>
+                    <h3>Clothing</h3>
+                    <p>Trendy fashion for all occasions</p>
+                </div>
+                <div class="category-card" onclick="showCategory('accessories')">
+                    <div class="category-icon"><img src="https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg?cs=srgb&dl=pexels-lum3n-44775-322207.jpg&fm=jpg" alt="Accessories" width="200" height="200"></div>
+                    <h3>Accessories</h3>
+                    <p>Complete your style with our accessories</p>
+                </div>
+                <div class="category-card" onclick="showCategory('home')">
+                    <div class="category-icon"><img src="https://images.pexels.com/photos/3076899/pexels-photo-3076899.jpeg?cs=srgb&dl=pexels-huy-phan-316220-3076899.jpg&fm=jpg" alt="Home & Garden" width="200" height="200"></div>
+                    <h3>Home & Garden</h3>
+                    <p>Everything for your home and garden</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="products-section">
+            <div class="section-header">
+                <button class="back-btn" onclick="showHome()">← Back to Categories</button>
+                <h2 id="categoryTitle" style="margin: 0;">Products</h2>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters" id="filters">
+                <div class="filter-row">    
+                    <div class="filter-group">
+                        <label for="priceRange">Price Range:</label>
+                        <select id="priceRange" onchange="applyFilters()">
+                            <option value="">All Prices</option>
+                            <option value="0-50">$0 - $50</option>
+                            <option value="50-100">$50 - $100</option>
+                            <option value="100-500">$100 - $500</option>
+                            <option value="500+">$500+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sortBy">Sort By:</label>
+                        <select id="sortBy" onchange="applyFilters()">
+                            <option value="">Default</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Rating</option>
+                            <option value="name">Name</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchInput">Search:</label>
+                        <input type="text" id="searchInput" placeholder="Search products..." oninput="applyFilters()">
+                    </div>
+                    <button class="clear-filters" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+
+            <div class="products-grid" id="productsGrid"></div>
+            <div class="no-products" id="noProducts" style="display: none;">
+                No products found matching your criteria.
+            </div>
+        </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Product Details</h2>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image" id="modalImage">📦</div>
+                <div class="product-details" id="modalDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-total">
+            <div class="total-amount" id="cartTotal">Total: $0.00</div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content checkout-content">
+            <div class="modal-header">
+                <h2>Checkout</h2>
+                <button class="close-modal" onclick="closeCheckout()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="checkoutName">Full Name*</label>
+                        <input type="text" id="checkoutName" name="name" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutEmail">Email*</label>
+                        <input type="email" id="checkoutEmail" name="email" required placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutPhone">Phone Number</label>
+                        <input type="tel" id="checkoutPhone" name="phone" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutAddress">Shipping Address*</label>
+                        <textarea id="checkoutAddress" name="address" rows="3" required placeholder="123 Main St, City, State, ZIP"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutPayment">Payment Method</label>
+                        <select id="checkoutPayment" name="payment">
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="cash">Cash on Delivery</option>
+                        </select>
+                    </div>
+                    <div class="checkout-summary">
+                        <h3>Order Summary</h3>
+                        <div id="checkoutSummaryItems"></div>
+                    </div>
+                    <button type="button" class="submit-checkout-btn" onclick="submitCheckout()">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DECOOPX</h3>
+                    <p>Your one-stop destination for quality products across multiple categories. Discover, shop, and enjoy a seamless shopping experience.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                        <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+                        <a href="#" class="social-link" aria-label="Instagram">📷</a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DECOOPX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-mobile-menu" onclick="toggleMobileMenu()">×</button>
+        <ul>
+            <li><a href="#home" onclick="toggleMobileMenu(); showHome();">Home</a></li>
+            <li><a href="#products" onclick="toggleMobileMenu()">Products</a></li>
+            <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
+            <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+        </ul>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
